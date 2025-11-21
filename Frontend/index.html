@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma de Reseñas Inteligente</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>🌟 Plataforma de Reseñas Inteligente</h1>
+    <nav id="main-nav">
+      <button id="btn-home" class="active" onclick="window.location.href='crear.html'">crear reseña</button>
+      <button id="btn-reviews" onclick="window.location.href='ver_resenas.html'">Ver Reseñas</button>
+       <button id="btn-logout" onclick="cerrarSesion()">Cerrar sesión</button>
+    </nav>
+  </header>
+
+  <main>
+    
+    <section id="home-section">
+      <div class="hero">
+        <h2>Bienvenido a la Plataforma de Reseñas</h2>
+        <p>Comparte tus opiniones y descubre lo que otros piensan. Nuestro sistema de IA analiza automáticamente el sentimiento de cada reseña.</p>
+        <div class="cta-buttons">
+        </div>
+      </div>
+    </section>
+
+    
+    <section id="review-section" class="hidden">
+      <h2>✍️ Publicar Reseña</h2>
+      <div id="review-alert"></div>
+      <form id="review-form">
+        <input type="text" id="product-name" placeholder="Nombre del producto" required>
+        <textarea id="review-text" placeholder="Escribe tu reseña detallada del producto..." required></textarea>
+        <button type="submit">Enviar Reseña</button>
+      </form>
+    </section>
+
+    
+    <section id="reviews-section" class="hidden">
+      <h2>📚 Reseñas de Productos</h2>
+      <div class="search-box">
+        <input type="text" id="search-product" placeholder="Buscar producto...">
+        <button id="search-button">🔍 Buscar</button>
+      </div>
+      <div id="reviews-list"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Lau y Lizzy Trabajo Reseñas</p>
+  </footer>
+
+  <script src="app.js"></script>
+  
+  <script>
+   
+    function cerrarSesion() {
+      localStorage.removeItem('token');
+      alert('Sesión cerrada exitosamente');
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>

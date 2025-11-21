@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Reseña</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            background: #667eea;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+        }
+
+        .success-msg {
+            color: #27ae60;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .error-msg {
+            color: #e74c3c;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ Crear Reseña</h1>
+        
+        <div class="form-container">
+            <input type="text" id="producto" placeholder="Nombre del producto" required>
+            <textarea id="texto-resena" placeholder="Escribe tu reseña aquí..." rows="6" required></textarea>
+            <button onclick="crearResena()">Publicar Reseña</button>
+            <button onclick="location.href='index.html'" class="btn-secondary">Volver al Inicio</button>
+            <p class="loading" id="loading" style="display: none;">⏳ Analizando sentimiento...</p>
+            <p class="success-msg" id="success"></p>
+            <p class="error-msg" id="error"></p>
+        </div>
+    </div>
+
+    <script>
+    const API_URL = 'http://127.0.0.1:8000';
+
+    window.onload = function() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Debes iniciar sesión primero');
+            window.location.href = 'login.html';
+        }
+    };
+
+    async function crearResena() {
+        const producto = document.getElementById('producto').value;
+        const textoResena = document.getElementById('texto-resena').value;
+        const token = localStorage.getItem('token');
+        const errorMsg = document.getElementById('error');
+        const successMsg = document.getElementById('success');
+        const loadingMsg = document.getElementById('loading');
+        
+        errorMsg.textContent = '';
+        successMsg.textContent = '';
+        
+        if (!producto || !textoResena) {
+            errorMsg.textContent = 'Por favor completa todos los campos';
+            return;
+        }
+        
+        try {
+            loadingMsg.style.display = 'block';
+            
+            const response = await fetch(`${API_URL}/reviews`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    producto: producto,
+                    texto_resena: textoResena
+                })
+            });
+            
+            loadingMsg.style.display = 'none';
+            
+            if (response.ok) {
+                const data = await response.json();
+                successMsg.textContent = `✅ Reseña publicada! Sentimiento: ${data.sentimiento}`;
+                document.getElementById('producto').value = '';
+                document.getElementById('texto-resena').value = '';
+                
+                setTimeout(() => {
+                    window.location.href = 'ver_resenas.html';
+                }, 2000);
+            } else {
+                const data = await response.json();
+                errorMsg.textContent = data.detail || 'Error al crear reseña';
+            }
+        } catch (error) {
+            loadingMsg.style.display = 'none';
+            errorMsg.textContent = 'Error de conexión: ' + error.message;
+        }
+    }
+    </script>
+</body>
+</html>
