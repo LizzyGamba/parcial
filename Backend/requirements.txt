@@ -6,5 +6,6 @@ python-jose[cryptography]
 passlib[bcrypt]
 httpx
 python-dotenv
-alembic         # opcional para migraciones
+alembic         
 pymysql
+email-validator
