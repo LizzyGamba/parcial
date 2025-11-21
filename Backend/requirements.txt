@@ -9,3 +9,5 @@ python-dotenv
 alembic         
 pymysql
 email-validator
+google-generativeai
+
