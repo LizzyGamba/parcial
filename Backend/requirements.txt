@@ -7,3 +7,4 @@ passlib[bcrypt]
 httpx
 python-dotenv
 alembic         # opcional para migraciones
+pymysql
